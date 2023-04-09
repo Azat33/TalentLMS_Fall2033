@@ -24,6 +24,9 @@ public class Driver {
                 case "edge":
                     driver = EdgeWebDriver.loadEdgeDriver();
                     break;
+                case "firefox":
+                    driver = FireFoxWebDriver.loadFirefoxDriver();
+                    break;
 
                 default:
                     driver = ChromeWebDriver.loadChromeDriver();
