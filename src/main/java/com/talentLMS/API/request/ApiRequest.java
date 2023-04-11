@@ -5,7 +5,11 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static com.talentLMS.API.talentLmsApi.EndPoints.*;
@@ -54,17 +58,26 @@ public abstract class ApiRequest {
 
     public Response get(String endPoint){
         log.info("Perform get request: " + endPoint);
-        this.response = given().spec(specification)
+        this.response = given()
+                .spec(specification)
                 .get(endPoint);
         logResponse();
         return this.response;
     }
 
-    public Response post(String endPoint, String body){
+    public Response post(String endPoint, String body) {
         log.info("Preform post request: {}", endPoint);
         log.info("Body is: {}", body);
-        this.response = given().spec(specification)
-                .body(body)
+        File jsonFile = null;
+        try {
+            jsonFile = File.createTempFile("data", ".json");
+            FileUtils.writeStringToFile(jsonFile, body, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.response = given()
+                .spec(specification)
+                .multiPart("json_data", jsonFile)
                 .post(endPoint);
         logResponse();
         return this.response;
@@ -72,7 +85,8 @@ public abstract class ApiRequest {
 
     public Response delete(String endPoint){
         log.info("Preform delete request: {}", endPoint);
-        this.response = given().spec(specification)
+        this.response = given()
+                .spec(specification)
                 .delete(endPoint);
         logResponse();
         return this.response;
@@ -81,7 +95,8 @@ public abstract class ApiRequest {
     public Response put(String endPoint, String body){
         log.info("Preform put request: {}", endPoint);
         log.info("Body is: {}", body);
-         this.response = given().spec(specification)
+         this.response = given()
+                 .spec(specification)
                 .body(body)
                 .put(endPoint);
          logResponse();
@@ -90,7 +105,8 @@ public abstract class ApiRequest {
     public Response patch(String endPoint, String body){
         log.info("Preform patch request: {}", endPoint);
         log.info("Body is: {}", body);
-        this.response = given().spec(specification)
+        this.response = given()
+                .spec(specification)
                 .body(body)
                 .patch(endPoint);
         logResponse();

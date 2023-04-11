@@ -31,7 +31,7 @@ public class EndPoints {
     public static final String GOTO_COURSE = "gotocourse";
     public static final String COURSE_COMPLETED_REDIRECT = "course_completed_redirect";
     public static final String LOGOUT_REDIRECT = "logout_redirect";
-
+    public static final String USER_SIGNUP = "usersignup";
 
 
     public static Map<String, String> BASE_HEADERS = new HashMap<>() {{

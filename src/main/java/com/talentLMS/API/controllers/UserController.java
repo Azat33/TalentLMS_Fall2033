@@ -1,10 +1,16 @@
 package com.talentLMS.API.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.talentLMS.API.pojo.User;
+import com.talentLMS.API.pojo.UserRequestBody;
 import com.talentLMS.API.request.ApiRequest;
+import com.talentLMS.API.utils.JsonUtils;
+import com.talentLMS.API.utils.RandomEntities;
 import com.talentLMS.UI.dataProviders.ConfigReader;
 import io.restassured.response.Response;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,8 +61,9 @@ public class UserController extends ApiRequest {
     }
 
 
-    public Response createUser(String requestBody) {
-        return this.response = super.post(getEndpoint(API, V1, USERS), requestBody);
+    public Response createUser(User user) throws IOException {
+        UserRequestBody userRequestBody = new UserRequestBody(user);
+        return this.response = super.post(getEndpoint(API, V1, USER_SIGNUP), JsonUtils.serializationToJson(userRequestBody));
     }
 
 }

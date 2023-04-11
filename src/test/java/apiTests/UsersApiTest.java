@@ -5,15 +5,18 @@ import com.talentLMS.API.asserts.ApiAsserts;
 import com.talentLMS.API.controllers.UserController;
 import com.talentLMS.API.pojo.User;
 import com.talentLMS.API.utils.JsonUtils;
+import com.talentLMS.API.utils.RandomEntities;
 import io.restassured.path.json.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.talentLMS.API.talentLmsApi.EndPoints.*;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.testng.AssertJUnit.assertEquals;
 @Slf4j
@@ -85,13 +88,35 @@ public class UsersApiTest extends BaseApiTest {
         log.info("Count of users offline: {}", offline);
     }
 
+    @Test (dependsOnMethods = "receiveUsersTest")
+    public void IisUserOnlineTest2() {
+        int online = 0;
+        int offline = 0;
+        StringBuilder onlineUsers = new StringBuilder();
+        StringBuilder offlineUsers = new StringBuilder();
+        for (User user : users) {
+            User userOnline = userController.isUserOnline(user.getId()).as(User.class);
+            if (userOnline.isOnline()) {
+                onlineUsers.append(" ").append(user.getFirstName()).append(",");
+                online++ ;
+            }
+            else {
+                offlineUsers.append(" ").append(user.getFirstName()).append(",");
+                offline++;
+            }
+            ApiAsserts.assertsThatResponse(userController.getResponse())
+                    .isCorrectHttpStatusCode(HTTP_OK);
+        }
+        log.info("Count of users online: {} {}",  online, onlineUsers.deleteCharAt(onlineUsers.length()-1));
+        log.info("Count of users offline: {} {}", offline, offlineUsers.deleteCharAt(offlineUsers.length()-1));
+    }
+
     @Test
     public void userSetStatusTest(){
         userController.userSetStatus(USER_ID, "25", STATUS, "inactive");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
-
     @Test
     public void forgotUsernameTest(){
         userController.forgotUsername("bakr22@gmai.com");
@@ -105,5 +130,11 @@ public class UsersApiTest extends BaseApiTest {
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
 
+    @Test
+    public void createUserTest() throws IOException {
+        userController.createUser(RandomEntities.generateUser());
+        ApiAsserts.assertsThatResponse(userController.getResponse())
+                .isCorrectHttpStatusCode(HTTP_CREATED);
+    }
 }
 
