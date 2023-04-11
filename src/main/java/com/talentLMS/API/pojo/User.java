@@ -19,6 +19,7 @@ public class User {
     @JsonProperty("last_name")
     String lastName;
     String email;
+    String password;
     @JsonProperty("restrict_email")
     String restrictEmail;
     @JsonProperty("user_type")
@@ -45,5 +46,6 @@ public class User {
     String[] groups;
     List<Certifications> certifications;
     String[] badges;
+    boolean online;
 
 }
