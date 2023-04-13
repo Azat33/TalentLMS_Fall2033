@@ -1,19 +1,18 @@
 package com.talentLMS.API.request;
 
+import com.talentLMS.API.pojo.User;
+import com.talentLMS.API.pojo.UserRequestBody;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static com.talentLMS.API.talentLmsApi.EndPoints.*;
 import static io.restassured.RestAssured.given;
+
 @Slf4j
 @Getter
 public abstract class ApiRequest {
@@ -39,24 +38,24 @@ public abstract class ApiRequest {
         for (String arg : args) {
             endPoint = endPoint.concat(arg).concat(SLASH);
         }
-        return endPoint.substring(0, endPoint.length()-1);
+        return endPoint.substring(0, endPoint.length() - 1);
     }
 
-    public void logResponse(){
+    public void logResponse() {
         log.warn("Response is:");
         log.warn(getResponse().getBody().asString());
         log.warn(String.valueOf(getResponse().getStatusCode()));
     }
 
-    public static String formatParameters(Map<String, String > parameters){
+    public static String formatParameters(Map<String, String> parameters) {
         StringBuilder query = new StringBuilder("?");
-        for (Map.Entry<String, String> entry : parameters.entrySet()){
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
             query.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
-        return query.deleteCharAt(query.length()-1).toString();
+        return query.deleteCharAt(query.length() - 1).toString();
     }
 
-    public Response get(String endPoint){
+    public Response get(String endPoint) {
         log.info("Perform get request: " + endPoint);
         this.response = given()
                 .spec(specification)
@@ -65,44 +64,56 @@ public abstract class ApiRequest {
         return this.response;
     }
 
+
+    public Response post(String endPoint, User user) {
+        log.info("Preform post request: {}", endPoint);
+        log.info("Body is: {}", user);
+        this.response = given()
+                .spec(specification)
+                .multiPart("first_name", user.getFirstName())
+                .multiPart("last_name", user.getLastName())
+                .multiPart("email", user.getEmail())
+                .multiPart("login", user.getLogin())
+                .multiPart("password", user.getPassword())
+                .post(endPoint);
+        logResponse();
+        return this.response;
+    }
     public Response post(String endPoint, String body) {
         log.info("Preform post request: {}", endPoint);
         log.info("Body is: {}", body);
-        File jsonFile = null;
-        try {
-            jsonFile = File.createTempFile("data", ".json");
-            FileUtils.writeStringToFile(jsonFile, body, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         this.response = given()
                 .spec(specification)
-                .multiPart("json_data", jsonFile)
+                .body(body)
                 .post(endPoint);
         logResponse();
         return this.response;
     }
 
-    public Response delete(String endPoint){
+    public Response delete(String endPoint, String userId) {
         log.info("Preform delete request: {}", endPoint);
+        log.info("Body is: {}", userId);
         this.response = given()
                 .spec(specification)
-                .delete(endPoint);
+                .multiPart("user_id", userId)
+                .multiPart("deleted_by_user_id", "1")
+                .post(endPoint);
         logResponse();
         return this.response;
     }
 
-    public Response put(String endPoint, String body){
+    public Response put(String endPoint, String body) {
         log.info("Preform put request: {}", endPoint);
         log.info("Body is: {}", body);
-         this.response = given()
-                 .spec(specification)
+        this.response = given()
+                .spec(specification)
                 .body(body)
                 .put(endPoint);
-         logResponse();
+        logResponse();
         return this.response;
     }
-    public Response patch(String endPoint, String body){
+
+    public Response patch(String endPoint, String body) {
         log.info("Preform patch request: {}", endPoint);
         log.info("Body is: {}", body);
         this.response = given()

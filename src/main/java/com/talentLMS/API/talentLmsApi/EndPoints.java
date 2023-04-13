@@ -32,12 +32,12 @@ public class EndPoints {
     public static final String COURSE_COMPLETED_REDIRECT = "course_completed_redirect";
     public static final String LOGOUT_REDIRECT = "logout_redirect";
     public static final String USER_SIGNUP = "usersignup";
+    public static final String DELETE_USER = "deleteuser";
 
 
     public static Map<String, String> BASE_HEADERS = new HashMap<>() {{
         put("Authorization", ConfigReader.getProperty("apiKey"));
-        put("Content-Length", "0");
-        put("Content-Type", "application/json");
+//        put("Content-Type", "multipart/form-data");
         put("Accept", "*/*");
         put("Accept-Encoding", "gzip, deflate, br");
         put("Connection", "keep-alive");

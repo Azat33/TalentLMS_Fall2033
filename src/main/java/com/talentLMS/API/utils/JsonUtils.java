@@ -7,9 +7,9 @@ import io.restassured.response.Response;
 public class JsonUtils {
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static String serializationToJson(Object pojo){
+    public static String serializationToJson(Object object){
         try {
-            return objectMapper.writeValueAsString(pojo);
+            return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

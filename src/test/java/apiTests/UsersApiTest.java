@@ -1,6 +1,5 @@
 package apiTests;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.talentLMS.API.asserts.ApiAsserts;
 import com.talentLMS.API.controllers.UserController;
 import com.talentLMS.API.pojo.User;
@@ -8,17 +7,12 @@ import com.talentLMS.API.utils.JsonUtils;
 import com.talentLMS.API.utils.RandomEntities;
 import io.restassured.path.json.JsonPath;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
 import java.util.List;
 
 import static com.talentLMS.API.talentLmsApi.EndPoints.*;
-import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.testng.AssertJUnit.assertEquals;
 @Slf4j
 public class UsersApiTest extends BaseApiTest {
 
@@ -42,7 +36,7 @@ public class UsersApiTest extends BaseApiTest {
     }
 
     @Test
-    public void receiveUserByEmail() throws JsonProcessingException {
+    public void receiveUserByEmail() {
         userController.getUserBy(USER_EMAIL, "azatkarapashov@gmail.com");
 //        user = JsonUtils.deSerializationFromJson(userController.getResponse(), User.class);
 //        jsonPath = userController.getResponse().jsonPath();
@@ -53,7 +47,7 @@ public class UsersApiTest extends BaseApiTest {
     }
 
     @Test
-    public void receiveUserById() throws JsonProcessingException {
+    public void receiveUserById(){
         userController.getUserBy(ID, "22");
         user = JsonUtils.deSerializationFromJson(userController.getResponse(), User.class);
 //        jsonPath = userController.getResponse().jsonPath();
@@ -73,7 +67,7 @@ public class UsersApiTest extends BaseApiTest {
         }
     }
 
-    @Test (dependsOnMethods = "receiveUsersTest")
+    @Test(dependsOnMethods = "receiveUsersTest")
     public void IisUserOnlineTest() {
         int online = 0;
         int offline = 0;
@@ -88,7 +82,7 @@ public class UsersApiTest extends BaseApiTest {
         log.info("Count of users offline: {}", offline);
     }
 
-    @Test (dependsOnMethods = "receiveUsersTest")
+    @Test(dependsOnMethods = "receiveUsersTest")
     public void IisUserOnlineTest2() {
         int online = 0;
         int offline = 0;
@@ -113,13 +107,13 @@ public class UsersApiTest extends BaseApiTest {
 
     @Test
     public void userSetStatusTest(){
-        userController.userSetStatus(USER_ID, "25", STATUS, "inactive");
+        userController.userSetStatus(USER_ID, "22", STATUS, "inactive");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
     @Test
     public void forgotUsernameTest(){
-        userController.forgotUsername("bakr22@gmai.com");
+        userController.forgotUsername("norman.satterfield@gmail.com");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
@@ -130,11 +124,49 @@ public class UsersApiTest extends BaseApiTest {
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
 
-    @Test
-    public void createUserTest() throws IOException {
+    @Test(dependsOnMethods = "receiveUsersTest")
+    public void createUserTest() {
+        if (users.size() == 6){
+            String idUser = "";
+            for (int i = 0; i < users.size()-1; i++){
+                if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i+1).getId())){
+                    idUser = users.get(i+1).getId();
+                }
+            }
+            userController.deleteUser(idUser);
+        }
         userController.createUser(RandomEntities.generateUser());
         ApiAsserts.assertsThatResponse(userController.getResponse())
-                .isCorrectHttpStatusCode(HTTP_CREATED);
+                .isCorrectHttpStatusCode(HTTP_OK);
+    }
+
+    @Test(dependsOnMethods = "receiveUsersTest")
+    public void createUserTestWithJson() {
+        if (users.size() == 6){
+            String idUser = "";
+            for (int i = 0; i < users.size()-1; i++){
+                if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i+1).getId())){
+                    idUser = users.get(i+1).getId();
+                }
+            }
+            userController.deleteUser(idUser);
+        }
+        userController.createUser(RandomEntities.generateUserBody());
+        ApiAsserts.assertsThatResponse(userController.getResponse())
+                .isCorrectHttpStatusCode(HTTP_OK);
+    }
+
+    @Test(dependsOnMethods = "receiveUsersTest")
+    public void deleteUserTest(){
+        String idUser = "";
+        for (int i = 0; i < users.size()-1; i++){
+            if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i+1).getId())) {
+                idUser = users.get(i + 1).getId();
+            }
+        }
+        userController.deleteUser(idUser);
+        ApiAsserts.assertsThatResponse(userController.getResponse())
+                .isCorrectHttpStatusCode(HTTP_OK);
     }
 }
 
