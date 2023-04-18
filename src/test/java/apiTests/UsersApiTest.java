@@ -108,12 +108,7 @@ public class UsersApiTest extends BaseApiTest {
 
     @Test(dependsOnMethods = "receiveUsersTest")
     public void userSetStatusTest() {
-        String userId = "";
-        for (int i = 0; i < users.size() - 1; i++) {
-            if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i + 1).getId()))
-                userId = users.get(i + 1).getId();
-        }
-        userController.userSetStatus(USER_ID, userId, STATUS, "inactive");
+        userController.userSetStatus(USER_ID, "22", STATUS, "inactive");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
