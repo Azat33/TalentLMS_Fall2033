@@ -9,10 +9,12 @@ import io.restassured.path.json.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 import java.util.List;
 
 import static com.talentLMS.API.talentLmsApi.EndPoints.*;
 import static java.net.HttpURLConnection.HTTP_OK;
+
 @Slf4j
 public class UsersApiTest extends BaseApiTest {
 
@@ -47,7 +49,7 @@ public class UsersApiTest extends BaseApiTest {
     }
 
     @Test
-    public void receiveUserById(){
+    public void receiveUserById() {
         userController.getUserBy(ID, "22");
         user = JsonUtils.deSerializationFromJson(userController.getResponse(), User.class);
 //        jsonPath = userController.getResponse().jsonPath();
@@ -78,7 +80,7 @@ public class UsersApiTest extends BaseApiTest {
             ApiAsserts.assertsThatResponse(userController.getResponse())
                     .isCorrectHttpStatusCode(HTTP_OK);
         }
-        log.info("Count of users online: {}",  online);
+        log.info("Count of users online: {}", online);
         log.info("Count of users offline: {}", offline);
     }
 
@@ -92,33 +94,34 @@ public class UsersApiTest extends BaseApiTest {
             User userOnline = userController.isUserOnline(user.getId()).as(User.class);
             if (userOnline.isOnline()) {
                 onlineUsers.append(" ").append(user.getFirstName()).append(",");
-                online++ ;
-            }
-            else {
+                online++;
+            } else {
                 offlineUsers.append(" ").append(user.getFirstName()).append(",");
                 offline++;
             }
             ApiAsserts.assertsThatResponse(userController.getResponse())
                     .isCorrectHttpStatusCode(HTTP_OK);
         }
-        log.info("Count of users online: {} {}",  online, onlineUsers.deleteCharAt(onlineUsers.length()-1));
-        log.info("Count of users offline: {} {}", offline, offlineUsers.deleteCharAt(offlineUsers.length()-1));
+        log.info("Count of users online: {} {}", online, onlineUsers.deleteCharAt(onlineUsers.length() - 1));
+        log.info("Count of users offline: {} {}", offline, offlineUsers.deleteCharAt(offlineUsers.length() - 1));
     }
 
     @Test
-    public void userSetStatusTest(){
+    public void userSetStatusTest() {
         userController.userSetStatus(USER_ID, "22", STATUS, "inactive");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
+
     @Test
-    public void forgotUsernameTest(){
+    public void forgotUsernameTest() {
         userController.forgotUsername("norman.satterfield@gmail.com");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
+
     @Test
-    public void forgotPasswordTest(){
+    public void forgotPasswordTest() {
         userController.forgotPassword("norman.satterfieldcharmaine.kihn");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
@@ -126,11 +129,11 @@ public class UsersApiTest extends BaseApiTest {
 
     @Test(dependsOnMethods = "receiveUsersTest")
     public void createUserTest() {
-        if (users.size() == 6){
+        if (users.size() == 6) {
             String idUser = "";
-            for (int i = 0; i < users.size()-1; i++){
-                if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i+1).getId())){
-                    idUser = users.get(i+1).getId();
+            for (int i = 0; i < users.size() - 1; i++) {
+                if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i + 1).getId())) {
+                    idUser = users.get(i + 1).getId();
                 }
             }
             userController.deleteUser(idUser);
@@ -142,11 +145,11 @@ public class UsersApiTest extends BaseApiTest {
 
     @Test(dependsOnMethods = "receiveUsersTest")
     public void createUserTestWithJson() {
-        if (users.size() == 6){
+        if (users.size() == 6) {
             String idUser = "";
-            for (int i = 0; i < users.size()-1; i++){
-                if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i+1).getId())){
-                    idUser = users.get(i+1).getId();
+            for (int i = 0; i < users.size() - 1; i++) {
+                if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i + 1).getId())) {
+                    idUser = users.get(i + 1).getId();
                 }
             }
             userController.deleteUser(idUser);
@@ -157,10 +160,10 @@ public class UsersApiTest extends BaseApiTest {
     }
 
     @Test(dependsOnMethods = "receiveUsersTest")
-    public void deleteUserTest(){
+    public void deleteUserTest() {
         String idUser = "";
-        for (int i = 0; i < users.size()-1; i++){
-            if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i+1).getId())) {
+        for (int i = 0; i < users.size() - 1; i++) {
+            if (Integer.parseInt(users.get(i).getId()) < Integer.parseInt(users.get(i + 1).getId())) {
                 idUser = users.get(i + 1).getId();
             }
         }

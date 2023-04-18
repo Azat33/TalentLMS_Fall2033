@@ -6,6 +6,7 @@ import com.talentLMS.API.controllers.CourseController;
 import com.talentLMS.API.pojo.Courses;
 import com.talentLMS.API.request.ApiRequest;
 import com.talentLMS.API.utils.JsonUtils;
+import com.talentLMS.API.utils.RandomEntities;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -47,5 +48,18 @@ public class CoursesApiTest extends BaseApiTest {
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
 
+    @Test
+    public void createCourseTest(){
+        courseController.createCourse(RandomEntities.generateCourse());
+        ApiAsserts.assertsThatResponse(courseController.getResponse())
+                .isCorrectHttpStatusCode(HTTP_OK);
+    }
+
+    @Test
+    public void deleteCourseTest(){
+        courseController.delete("126");
+        ApiAsserts.assertsThatResponse(courseController.getResponse())
+                .isCorrectHttpStatusCode(HTTP_OK);
+    }
 
 }

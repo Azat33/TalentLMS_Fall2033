@@ -1,5 +1,6 @@
 package com.talentLMS.API.controllers;
 
+import com.talentLMS.API.pojo.Courses;
 import com.talentLMS.API.request.ApiRequest;
 import io.restassured.response.Response;
 
@@ -14,23 +15,34 @@ public class CourseController extends ApiRequest {
         super(url, headers);
     }
 
-    public Response getCourse(){
+    public Response getCourse() {
         return this.response = super.get(getEndpoint(COURSES));
     }
-    public Response getCourseBy(String key, String value){
-        Map<String, String > enter = new HashMap<>();
+
+    public Response getCourseBy(String key, String value) {
+        Map<String, String> enter = new HashMap<>();
         enter.put(key, value);
         return this.response = super.get(getEndpoint(COURSES + formatParameters(enter)));
     }
 
-    public Response gotoCourse(String... firstKeySecondValue){
+    public Response gotoCourse(String... firstKeySecondValue) {
         Map<String, String> enter = new HashMap<>();
-        if (firstKeySecondValue.length % 2 != 0) throw new IllegalArgumentException("The number of arguments must be even.");
-        for (int i = 0; i < firstKeySecondValue.length; i += 2){
+        if (firstKeySecondValue.length % 2 != 0)
+            throw new IllegalArgumentException("The number of arguments must be even.");
+        for (int i = 0; i < firstKeySecondValue.length; i += 2) {
             String key = firstKeySecondValue[i];
             String value = firstKeySecondValue[i + 1];
             enter.put(key, value);
         }
         return this.response = super.get(getEndpoint(GOTO_COURSE + formatParameters(enter)));
     }
+
+    public Response createCourse(Courses courses) {
+        return this.response = super.post(getEndpoint(CREATE_COURSE), courses);
+    }
+
+//    public Response deleteCourse(String courseId){
+//        return this.response = super.deleteUser(getEndpoint(DELETE_USER), courseId);
+//    }
+
 }

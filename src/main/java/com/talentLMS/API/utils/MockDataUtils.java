@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class MockDataUtils {
 
-    private static final Faker faker = new Faker(new Locale("EN"));
+    private static final Faker faker = new Faker(new java.util.Locale("en"));
     private MockDataUtils(){
 
     }
@@ -28,6 +28,20 @@ public class MockDataUtils {
     }
 
     public static String generatePassword(){
-        return faker.internet().password(10, 20, true, true, true);
+        return faker.internet()
+                .password(10, 20, true, true, true);
+    }
+
+    public static String generateCourseName(){
+        return faker.educator().course();
+    }
+
+    public static String generateDescription(){
+        return faker.lorem().sentence();
+    }
+
+    public static String generateCodeNumber(){
+        int num =  faker.number().numberBetween(1,101);
+        return String.format("%03d", num);
     }
 }
