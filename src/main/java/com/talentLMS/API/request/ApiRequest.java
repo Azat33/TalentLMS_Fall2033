@@ -1,5 +1,6 @@
 package com.talentLMS.API.request;
 
+import com.talentLMS.API.pojo.Courses;
 import com.talentLMS.API.pojo.User;
 import com.talentLMS.API.pojo.UserRequestBody;
 import io.restassured.builder.RequestSpecBuilder;
@@ -79,6 +80,20 @@ public abstract class ApiRequest {
         logResponse();
         return this.response;
     }
+
+    public Response post(String endPoint, Courses courses) {
+        log.info("Preform post request: {}", endPoint);
+        log.info("Body is: {}", courses);
+        this.response = given()
+                .spec(specification)
+                .multiPart("name", courses.getName())
+                .multiPart("description", courses.getDescription())
+                .multiPart("code", courses.getCode())
+                .post(endPoint);
+        logResponse();
+        return this.response;
+    }
+
     public Response post(String endPoint, String body) {
         log.info("Preform post request: {}", endPoint);
         log.info("Body is: {}", body);
@@ -98,6 +113,18 @@ public abstract class ApiRequest {
                 .multiPart("user_id", userId)
                 .multiPart("deleted_by_user_id", "1")
                 .post(endPoint);
+        logResponse();
+        return this.response;
+    }
+
+    public Response delete(String userId) {
+        log.info("Preform delete request: {}", DELETE_COURSE);
+        log.info("Body is: {}", userId);
+        this.response = given()
+                .spec(specification)
+                .multiPart("course_id", userId)
+                .multiPart("deleted_by_user_id", "1")
+                .post(DELETE_COURSE);
         logResponse();
         return this.response;
     }
