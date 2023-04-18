@@ -106,7 +106,7 @@ public class UsersApiTest extends BaseApiTest {
         log.info("Count of users offline: {} {}", offline, offlineUsers.deleteCharAt(offlineUsers.length() - 1));
     }
 
-    @Test(dependsOnMethods = "receiveUsersTest")
+    @Test
     public void userSetStatusTest() {
         userController.userSetStatus(USER_ID, "22", STATUS, "inactive");
         ApiAsserts.assertsThatResponse(userController.getResponse())
