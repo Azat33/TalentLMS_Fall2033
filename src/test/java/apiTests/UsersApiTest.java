@@ -107,7 +107,7 @@ public class UsersApiTest extends BaseApiTest {
 
     @Test
     public void userSetStatusTest(){
-        userController.userSetStatus(USER_ID, "50", STATUS, "inactive");
+        userController.userSetStatus(USER_ID, "22", STATUS, "inactive");
         ApiAsserts.assertsThatResponse(userController.getResponse())
                 .isCorrectHttpStatusCode(HTTP_OK);
     }
