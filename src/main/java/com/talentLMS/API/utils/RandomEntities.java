@@ -1,5 +1,6 @@
 package com.talentLMS.API.utils;
 
+import com.talentLMS.API.pojo.Courses;
 import com.talentLMS.API.pojo.User;
 import com.talentLMS.API.pojo.UserRequestBody;
 
@@ -27,6 +28,14 @@ public class RandomEntities {
                 .email(generateEmail())
                 .login(generateLogin())
                 .password(generatePassword())
+                .build();
+    }
+
+    public static Courses generateCourse(){
+        return Courses.builder()
+                .name(generateCourseName())
+                .description(generateDescription())
+                .code(generateCodeNumber())
                 .build();
     }
 
